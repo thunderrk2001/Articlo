@@ -22,7 +22,7 @@ router.post("/signIn", async(req, res) => {
                     secure: true,
                     sameSite: "strict"
                 })
-                console.log(token)
+
                 res.status(200).send({ "message": "sucessfull signed In" })
             } else {
                 res.status(400).send({ "message": "password not matched" })

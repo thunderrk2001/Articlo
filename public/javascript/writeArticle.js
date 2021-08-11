@@ -6,10 +6,12 @@ function changeFontSize(size) {
 }
 var color_hash = { 0: "Black", 1: "Yellow", 2: "Green", 3: "Magenta" }
 var justify_hash = { 0: "justifyLeft", 1: "justifyRight", 2: "justifyCenter" }
+
 document.getElementById("justify").addEventListener("input", (e) => {
     e.preventDefault()
     editor.focus()
     let value = document.getElementById("justify").value
+    console.log(value)
     document.execCommand(justify_hash[value])
 })
 document.getElementById("color").addEventListener("input", (e) => {

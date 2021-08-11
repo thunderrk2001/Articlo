@@ -10,7 +10,7 @@ router.get("/writeArticle", validator, async(req, res) => {
         httpOnly: false,
         secure: false,
     })
-    res.status(200).render("./writeArticle.ejs")
+    res.status(200).render("./writeArticle.ejs", { name: req.userName })
 
 })
 router.get("/writeArticle/userUploadedImages", validator, async(req, res) => {

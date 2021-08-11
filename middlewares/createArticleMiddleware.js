@@ -2,10 +2,11 @@ const express = require("express")
 const router = express.Router()
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
-var validator = ((req, res, next) => {
+const model = require("../models/dbSchema")
+var validator = (async(req, res, next) => {
     var t = req.cookies.token
     if (t != undefined) {
-        jwt.verify(t, process.env.bcryptHash, (e, d) => {
+        jwt.verify(t, process.env.bcryptHash, async(e, d) => {
             if (e) {
                 res.cookie("nextPage", "writeArticle", {
                     httpOnly: false,
@@ -13,6 +14,8 @@ var validator = ((req, res, next) => {
                 })
                 res.redirect("/signUp")
             } else {
+                const user = await model.findOne({ "userDataId": d })
+                req.userName = user.userName
                 req.userDataId = d
                 next()
             }
