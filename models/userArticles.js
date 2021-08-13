@@ -3,10 +3,12 @@ mongo.connect(process.env.dbId, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }).then(res => console.log("mongodb connected")).catch(e => console.log("mongo errror" + " : " + e))
-const model = mongo.model("userArticles", {
+mongo.set('useCreateIndex', true)
+var sch = new mongo.Schema({
     title: {
         type: String,
-        required: true
+        required: true,
+        index: true
     },
     article: {
         type: String,
@@ -27,4 +29,6 @@ const model = mongo.model("userArticles", {
 
 
 })
+sch.index({ title: "text" })
+const model = mongo.model("userArticles", sch)
 module.exports = model

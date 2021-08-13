@@ -119,47 +119,34 @@
 </style>
 
 <body>
-    <div class="container">
-        <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-            <div href="" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
-
-                <div style="background: rgb(146, 241, 146); padding: 5px; color: rgb(255, 255, 255);
-                margin-right:5px ; font-weight:600;"> Author:</div>
-                <div style="color: rgb(108 116 153); font-size: 18px; font-weight: 700;">
-                    <%=json_res.userName  %>
-                </div>
-            </div>
 
 
-            <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="/" class="nav-link px-2 link-secondary">Home</a></li>
-
-
-            </ul>
-
-            <div class="col-md-3 text-end">
-
-
-            </div>
-        </header>
-    </div>
-
-    <div class="title">
-        <%= json_res.title %>
-    </div>
+    <div class="title" id="title">How to make fragments with interfaces and classses and may more things</div>
     <div class="main">
 
         <div class="space"></div>
         <div class="content">
-            <div class="ele">
-                <%-json_res.article  %>
-            </div>
+
 
         </div>
         <div class="space"></div>
 
     </div>
-
+    <script>
+        var data = localStorage.getItem("article_data")
+        var title = localStorage.getItem("title")
+        document.getElementById("title").innerText = title
+        var ele = document.createElement("div")
+        ele.style.display = "flex"
+        ele.style.width = "900px"
+        ele.style.flexFlow = "wrap"
+        ele.innerHTML = data
+        ele.className = "ele"
+        ele.style.wordWrap = "word-break"
+        ele.style.display = "block"
+        ele.style.overflowWrap = "word-break"
+        document.querySelector(".content").appendChild(ele)
+    </script>
 </body>
 
 

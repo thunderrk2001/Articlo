@@ -18,6 +18,7 @@ const previewRoute = require("./controllers/previewRoute")
 const upload_image_route = require("./controllers/uploadImage")
 const image_rt = require("./controllers/image_cnt")
 const home_route = require("./controllers/home")
+const searchRoute = require("./controllers/search")
 const path = require("path");
 app.set('view engine', 'ejs');
 app.use('/static', express.static('static'))
@@ -49,6 +50,7 @@ app.use(userRoute)
 app.use(writeArticleRoute)
 app.use(previewRoute)
 app.use(upload_image_route)
+app.use(searchRoute)
 const checker = require("./middlewares/signInUpChecker")
 app.get("/signIn", checker, (req, res) => {
     res.render("./signIn.ejs", )
