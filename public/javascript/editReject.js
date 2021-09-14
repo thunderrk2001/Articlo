@@ -60,17 +60,10 @@ document.getElementById("font5").addEventListener("mousedown", (e) => {
 function font5() {
     var ele = document.getElementById("font5")
     editor.focus()
+
     changeFontSize(5)
     change_style_font("font5", ele, "font3", "font7")
-
-}
-
-function font3() {
-    var ele = document.getElementById("font5")
-    editor.focus()
-    changeFontSize(3)
-    change_style_font("font3", ele, "font5", "font7")
-
+    console.log("ok")
 }
 document.getElementById("font3").addEventListener("mousedown", (e) => {
     var ele = document.getElementById("font3")
@@ -157,16 +150,6 @@ function change_style(command, ele) {
     }
 
 }
-document.getElementById("load").addEventListener("mousedown", async(e) => {
-    e.preventDefault()
-    await loadImageFileAsURL()
-})
-document.getElementById("title").addEventListener("click", () => {
-    if (document.getElementById("titleMessage").style.visibility == "visible") {
-
-        document.getElementById("titleMessage").style.visibility = "hidden"
-    }
-})
 
 function change_state_load_btn(check) {
     if (check) {
@@ -179,6 +162,16 @@ function change_state_load_btn(check) {
         document.getElementById("load").style.opacity = "1"
     }
 }
+document.getElementById("load").addEventListener("mousedown", async(e) => {
+    e.preventDefault()
+    await loadImageFileAsURL()
+})
+document.getElementById("title").addEventListener("click", () => {
+    if (document.getElementById("titleMessage").style.visibility == "visible") {
+
+        document.getElementById("titleMessage").style.visibility = "hidden"
+    }
+})
 
 async function loadImageFileAsURL() {
     var filesSelected = document.getElementById("image").files;
@@ -194,6 +187,7 @@ async function loadImageFileAsURL() {
         } else if (fileToLoad.size > 200000) {
             document.getElementById("messageImage").style.visibility = "visible"
         }
+
     }
 }
 async function uploadImage(fileToLoad) {
@@ -217,6 +211,7 @@ async function uploadImage(fileToLoad) {
         console.log(e)
     }
     change_state_load_btn(false)
+
 
 }
 
@@ -300,7 +295,8 @@ document.getElementById("submit-btn").addEventListener("click", async() => {
 
 })
 async function sendFullArticleData(data, title) {
-    const res = await fetch("/post_data", {
+    var id = document.getElementById("submit-btn").getAttribute("data-uid")
+    const res = await fetch(`/myArticles/editReject/${id}/submit`, {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -317,9 +313,9 @@ async function sendFullArticleData(data, title) {
 }
 
 function goToHomePage() {
-    localStorage.removeItem("article_data")
-    localStorage.removeItem("title")
-    window.location = "/"
+    localStorage.removeItem("article_data_reject_edit")
+    localStorage.removeItem("title_reject_edit")
+    window.location = "/myArticles"
 
 }
 
@@ -346,11 +342,12 @@ async function sendImageToServer(html_ele) {
 }
 
 document.getElementById("preview-btn").addEventListener("click", () => {
-    localStorage.setItem("article_data", editor.innerHTML)
-    localStorage.setItem("title", document.getElementById("title").value)
+    var id = document.getElementById("preview-btn").getAttribute("data-uid")
+    localStorage.setItem("preview", "edit_reject")
+    localStorage.setItem(`article_data_reject_edit${id}`, editor.innerHTML)
+    localStorage.setItem(`title_reject_edit${id}`, document.getElementById("title").value)
     makeBodyUnclcikable()
-
-    window.location = "/writeArticle/previewRoute"
+    window.location = `/myArticles/editReject/${id}/preview`
 
 })
 
@@ -360,12 +357,16 @@ function makeBodyUnclcikable() {
 }
 window.onload = () => {
     document.getElementById("messageImage").style.visibility = "hidden"
-    if (localStorage.getItem("article_data") != null) {
-        editor.innerHTML = localStorage.getItem("article_data")
-        localStorage.removeItem("article_data")
+    var id = document.getElementById("preview-btn").getAttribute("data-uid")
+    if (localStorage.getItem(`article_data_reject_edit${id}`) != null) {
+        editor.innerHTML = localStorage.getItem(`article_data_reject_edit${id}`)
+        document.getElementById("title").innerText = localStorage.getItem(`title_reject_edit${id}`)
+        localStorage.removeItem(`title_reject_edit${id}`)
+        localStorage.removeItem(`article_data_reject_edit${id}`)
+
     }
     document.getElementById("preview-btn").disabled = false
     document.getElementById("submit-btn").disabled = false
-    setTimeout(() => { font3() }, 100)
+    setTimeout(() => { font5() }, 100)
 
 }

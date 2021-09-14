@@ -11,7 +11,7 @@ var validator = (async(req, res, next) => {
         if (blackListedToken == null) {
             jwt.verify(t, process.env.bcryptHash, async(e, d) => {
                 if (e) {
-                    res.cookie("nextPage", "writeArticle", {
+                    res.cookie("nextPage", "myArticles", {
                         httpOnly: false,
                         secure: false,
                     })
@@ -23,16 +23,16 @@ var validator = (async(req, res, next) => {
                     next()
                 }
             })
-
         } else {
-            res.cookie("nextPage", "writeArticle", {
+            res.cookie("nextPage", "myArticles", {
                 httpOnly: false,
                 secure: false,
             })
             res.redirect("/signUp")
+
         }
     } else {
-        res.cookie("nextPage", "writeArticle", {
+        res.cookie("nextPage", "myArticles", {
             httpOnly: false,
             secure: false,
         })

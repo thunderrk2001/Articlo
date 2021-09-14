@@ -60,17 +60,10 @@ document.getElementById("font5").addEventListener("mousedown", (e) => {
 function font5() {
     var ele = document.getElementById("font5")
     editor.focus()
+
     changeFontSize(5)
     change_style_font("font5", ele, "font3", "font7")
-
-}
-
-function font3() {
-    var ele = document.getElementById("font5")
-    editor.focus()
-    changeFontSize(3)
-    change_style_font("font3", ele, "font5", "font7")
-
+    console.log("ok")
 }
 document.getElementById("font3").addEventListener("mousedown", (e) => {
     var ele = document.getElementById("font3")
@@ -144,6 +137,18 @@ function change_style_font(command, ele, second, third) {
 
 }
 
+function change_state_load_btn(check) {
+    if (check) {
+        document.getElementById("load").innerText = "Uploading....."
+        document.getElementById("load").style.pointerEvents = "none"
+        document.getElementById("load").style.opacity = "0.5"
+    } else {
+        document.getElementById("load").innerText = "Upload"
+        document.getElementById("load").style.pointerEvents = "visible"
+        document.getElementById("load").style.opacity = "1"
+    }
+}
+
 function change_style(command, ele) {
 
     if (document.queryCommandState(command) && ele.classList.contains("bg-light")) {
@@ -168,18 +173,6 @@ document.getElementById("title").addEventListener("click", () => {
     }
 })
 
-function change_state_load_btn(check) {
-    if (check) {
-        document.getElementById("load").innerText = "Uploading....."
-        document.getElementById("load").style.pointerEvents = "none"
-        document.getElementById("load").style.opacity = "0.5"
-    } else {
-        document.getElementById("load").innerText = "Upload"
-        document.getElementById("load").style.pointerEvents = "visible"
-        document.getElementById("load").style.opacity = "1"
-    }
-}
-
 async function loadImageFileAsURL() {
     var filesSelected = document.getElementById("image").files;
     if (filesSelected.length > 0) {
@@ -187,13 +180,14 @@ async function loadImageFileAsURL() {
         if (fileToLoad.type.match("image.*") && fileToLoad.size <= 200000) {
             var fileReader = new FileReader();
             fileReader.onload = async function(fileLoadedEvent) {
-                change_state_load_btn(true)
                 await uploadImage(fileToLoad)
             };
+
             fileReader.readAsDataURL(fileToLoad);
         } else if (fileToLoad.size > 200000) {
             document.getElementById("messageImage").style.visibility = "visible"
         }
+
     }
 }
 async function uploadImage(fileToLoad) {
@@ -216,8 +210,8 @@ async function uploadImage(fileToLoad) {
 
         console.log(e)
     }
-    change_state_load_btn(false)
 
+    change_state_load_btn(false)
 }
 
 function addImageToEditor(imageLoaded) {
@@ -300,7 +294,8 @@ document.getElementById("submit-btn").addEventListener("click", async() => {
 
 })
 async function sendFullArticleData(data, title) {
-    const res = await fetch("/post_data", {
+    var id = document.getElementById("submit-btn").getAttribute("data-uid")
+    const res = await fetch(`/myArticles/update/${id}/submit`, {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -317,9 +312,9 @@ async function sendFullArticleData(data, title) {
 }
 
 function goToHomePage() {
-    localStorage.removeItem("article_data")
-    localStorage.removeItem("title")
-    window.location = "/"
+    localStorage.removeItem("article_data_reject_edit")
+    localStorage.removeItem("title_reject_edit")
+    window.location = "/myArticles"
 
 }
 
@@ -346,26 +341,32 @@ async function sendImageToServer(html_ele) {
 }
 
 document.getElementById("preview-btn").addEventListener("click", () => {
-    localStorage.setItem("article_data", editor.innerHTML)
-    localStorage.setItem("title", document.getElementById("title").value)
     makeBodyUnclcikable()
-
-    window.location = "/writeArticle/previewRoute"
+    var id = document.getElementById("preview-btn").getAttribute("data-uid")
+    localStorage.setItem("preview", "edit_reject")
+    localStorage.setItem(`article_data_reject_edit${id}`, editor.innerHTML)
+    localStorage.setItem(`title_reject_edit${id}`, document.getElementById("title").value)
+    window.location = `/myArticles/editReject/${id}/preview`
 
 })
+window.onload = () => {
+    document.getElementById("messageImage").style.visibility = "hidden"
+    var id = document.getElementById("preview-btn").getAttribute("data-uid")
+    if (localStorage.getItem(`article_data_reject_edit${id}`) != null) {
+        editor.innerHTML = localStorage.getItem(`article_data_reject_edit${id}`)
+        document.getElementById("title").innerHTML = localStorage.getItem(`title_reject_edit${id}`)
+        localStorage.removeItem(`title_reject_edit${id}`)
+        localStorage.removeItem(`article_data_reject_edit${id}`)
+
+    }
+
+    document.getElementById("preview-btn").disabled = false
+    document.getElementById("submit-btn").disabled = false
+    setTimeout(() => { font5() }, 100)
+
+}
 
 function makeBodyUnclcikable() {
     document.body.style.pointerEvents = "none"
     document.body.style.opacity = "0.5"
-}
-window.onload = () => {
-    document.getElementById("messageImage").style.visibility = "hidden"
-    if (localStorage.getItem("article_data") != null) {
-        editor.innerHTML = localStorage.getItem("article_data")
-        localStorage.removeItem("article_data")
-    }
-    document.getElementById("preview-btn").disabled = false
-    document.getElementById("submit-btn").disabled = false
-    setTimeout(() => { font3() }, 100)
-
 }

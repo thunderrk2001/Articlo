@@ -29,9 +29,21 @@ var sch = new mongo.Schema({
     unixTime: {
         type: Date,
         required: true
+    },
+    isForUpdate: {
+        type: Boolean,
+        required: true
+    },
+    isForUpdate: {
+        type: Boolean,
+        required: true
+    },
+    uid: {
+        type: String
     }
+
 
 })
 sch.index({ title: "text" })
-const model = mongo.model("userArticles", sch)
+const model = mongo.model("Pending", sch)
 module.exports = model

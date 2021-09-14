@@ -11,16 +11,19 @@ var validator = (async(req, res, next) => {
             jwt.verify(t, process.env.bcryptHash, (e, d) => {
 
                 if (e) {
-                    next()
-                } else {
                     res.redirect("/")
+                } else {
+                    next()
                 }
             })
         } else {
-            next()
+            res.redirect("/")
+
+
         }
     } else {
-        next()
+        res.redirect("/")
+
 
     }
 })

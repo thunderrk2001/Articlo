@@ -14,13 +14,11 @@ router.get("/writeArticle", validator, async(req, res) => {
 
 })
 router.get("/writeArticle/userUploadedImages", validator, async(req, res) => {
-    let json_list = []
-    let urlList = []
-
-    json_list = await model.find({ "userDataId": req.userDataId })
+    const json_list = await model.find({ "userDataId": req.userDataId }).select({ "image_url": 1, _id: 0 }).lean()
     if (json_list.length != 0) {
-        json_list.forEach((json_ele) => {
-            urlList.push(json_ele.image_url)
+        let urlList = []
+        json_list.forEach((ele) => {
+            urlList.push(ele.image_url)
         })
         res.status(200).send({ "message": "success", "urlList": urlList })
     } else {

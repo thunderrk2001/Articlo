@@ -57,8 +57,7 @@
     }
     
     .ele {
-        display: flex;
-        flex-flow: wrap;
+        display: block;
         width: 100%;
         word-wrap: break-word;
         overflow-wrap: break-word;
@@ -87,19 +86,21 @@
             height: 100px !important;
         }
         .title {
+            padding: 10px;
             font-size: 30px;
         }
         .image {
             padding: 2px;
-            width: 500px;
+            max-width: 100%;
         }
     }
     
-    @media only screen and (max-width:1050px) {
+    @media only screen and (max-width:1050px) and (min-width:601px) {
         .main {
             width: fit-content;
         }
         .title {
+            padding: 10px;
             font-size: 35px;
         }
         .content {
@@ -112,7 +113,7 @@
         }
         .space {
             display: block;
-            width: 50px !important;
+            width: 10px !important;
             height: 100px !important;
         }
     }

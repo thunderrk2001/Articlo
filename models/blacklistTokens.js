@@ -3,18 +3,12 @@ mongo.connect(process.env.dbId, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }).then(res => console.log("mongodb connected")).catch(e => console.log("mongo errror" + " : " + e))
-const model = mongo.model("image", {
-    image_url: {
+var sch = new mongo.Schema({
+    token: {
         type: String,
-        required: true
-    },
-    userDataId: {
-        type: String,
-        required: true
-    },
-    unixTime: {
-        type: Date,
-        required: true
+        required: true,
     }
+
 })
+const model = mongo.model("blacklistedAuthTokens", sch)
 module.exports = model

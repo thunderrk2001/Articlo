@@ -9,7 +9,7 @@ var validator = ((req, res, next) => {
             if (e) {
                 res.status(400).send({ "message": "wrong credentials" })
             } else {
-                req.userDataId = d
+                req.userDataId = d.token
                 next()
             }
         })

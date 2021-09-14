@@ -9,14 +9,14 @@ router.post("/signIn", async(req, res) => {
         const password = req.body.password
         if (userName == undefined || password == undefined)
             throw "field cant be empty"
-        const findModel = await model.findOne({ userName: userName })
+        const findModel = await model.findOne({ userName: userName }).lean()
         if (findModel == null) {
             throw "User Name not exist"
         } else {
             var compare_result = await bcrypt.compare(password, findModel.password)
             if (compare_result) {
                 var cp = JSON.parse(JSON.stringify(findModel))
-                var token = await jwt.sign(cp.userDataId, process.env.bcryptHash)
+                var token = await jwt.sign({ "token": cp.userDataId }, process.env.bcryptHash)
                 res.status(200).cookie("token", token, {
                     httpOnly: true,
                     secure: true,

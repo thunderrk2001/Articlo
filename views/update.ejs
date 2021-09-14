@@ -144,7 +144,7 @@
                         <li><a href="/" class="nav-link px-2 link-secondary">Home</a></li>
                         <li><a href="/myArticles" class="nav-link px-2 link-secondary">My Artilces</a></li>
                         <li>
-                            <div class="nav-link px-2 link-dark" onclick="return false">Create</div>
+                            <div href="" class="nav-link px-2 link-dark" onclick="return false">Create</div>
                         </li>
 
                     </ul>
@@ -160,7 +160,7 @@
 
 
             <div class="flex">
-                <textarea placeholder="Title" id="title" class="form-control form-control-lg mb-2"></textarea>
+                <textarea placeholder="Title" id="title" class="form-control form-control-lg mb-2"><%=data.title  %> </textarea>
                 <div style="align-items: center; text-align: center; color: red; visibility: hidden;" id="titleMessage">Title is too small</div>
                 <div class="flex-2">
                     <button type="button" class="btn mx-1 mb-1 bg-light control-overflow" id="bold">BOLD</button>
@@ -189,12 +189,12 @@
                 </button>
                 </div>
                 <div class="editor px-3 pt-4" contenteditable="true">
-
+                    <%-data.article%>
                 </div>
             </div>
             <div class="finalButtons">
-                <button type="button" id="preview-btn" disabled class="btn  bg-success btn-primary  btn-lg btn-block " style="width: 130px; overflow: hidden; height: 50px;">Preview</button>
-                <button type="button" id="submit-btn" disabled class="btn bg-success  btn-primary btn-lg btn-block" style="width: 130px; overflow: hidden; height: 50px;">Submit</button>
+                <button type="button" id="preview-btn" data-uid="<%=id%>" disabled class="btn  bg-success btn-primary  btn-lg btn-block " style="width: 130px; overflow: hidden; height: 50px;">Preview</button>
+                <button type="button" id="submit-btn" data-uid="<%=id%>" disabled class="btn bg-success  btn-primary btn-lg btn-block" style="width: 130px; overflow: hidden; height: 50px;">Update </button>
             </div>
         </div>
 
@@ -229,12 +229,11 @@
         </div>
 
     </div>
-    <div id="sending" style="text-align: center;visibility: hidden;font-weight: 700;color: rgb(21, 61, 19); font-size: 40px;z-index: 10; position: absolute;top: 45%; left: 40%; ">Sending Article...</div>
+    <div id="sending" style="text-align: center;visibility: hidden;font-weight: 700;color: rgb(21, 61, 19); font-size: 40px;z-index: 10; position: absolute;top: 45%; left: 40%; ">Sending Update... </div>
     <!-- MDB -->
-
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.js"></script>
 
-    <script type="text/javascript" src="/writeArticle.js">
+    <script type="text/javascript" src="/update.js">
     </script>
 
 </body>

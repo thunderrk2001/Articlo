@@ -143,15 +143,39 @@
             border: 1px solid grey;
         }
         
-        @media only screen and ( max-width:600px) {
+        @media only screen and (max-width:400px) {
             .h1 {
-                font-size: 15px;
+                font-size: 17px;
             }
             .bgname {
-                font-size: 10px;
+                font-size: 12px;
             }
             .dateTime {
-                font-size: 10px;
+                font-size: 12px;
+            }
+            .mx-5 {
+                margin: 0.5rem !important;
+            }
+            .pageNumbering {
+                padding: 5px;
+            }
+        }
+        
+        @media only screen and ( max-width:600px) and ( min-width:401px) {
+            .h1 {
+                font-size: 17px;
+            }
+            .bgname {
+                font-size: 12px;
+            }
+            .dateTime {
+                font-size: 12px;
+            }
+            .mx-5 {
+                margin: 0.5rem !important;
+            }
+            .pageNumbering {
+                padding: 5px;
             }
         }
     </style>
@@ -163,20 +187,28 @@
         </a>
         <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
             <li><a href="#" class="nav-link px-2 link-secondary">Home</a></li>
-            <% if(signedState) {%>
 
-                <li><a href="#" class="nav-link px-2 link-dark">My Artilces</a></li>
-                <li><a href="/writeArticle" class="nav-link px-2 link-dark">Create</a></li>
-                <% } %>
+
+            <li><a href="/myArticles" class="nav-link px-2 link-dark">My Artilces</a></li>
+            <li><a href="/writeArticle" class="nav-link px-2 link-dark">Create</a></li>
+
         </ul>
         <div class="col-md-3 text-end">
             <% if(!signedState){ %>
                 <button type="button" id="signUp-btn" class="btn btn-success ">Sign-up</button>
                 <button type="button" id="signIn-btn" class="btn btn-outline-success ">Sign-in</button>
                 <% }else{ %>
-                    <div>
-                        <%=name  %>
+                    <div class="flex_profile" style="display: flex; align-items: center;">
+                        <div style="text-align: center;">
+                            <%=name  %>
+                        </div>
+                        <form action="/signOut" method="GET">
+                            <button type="submit" class="btn mx-1" style="background-color: black;color: white;">
+                        Sign out
+                    </button>
+                        </form>
                     </div>
+
                     <% } %>
 
         </div>
@@ -184,58 +216,72 @@
     </header>
 </div>
 
-<form autocomplete="off" action="/action_page.php" style="display: flex; align-items: center;
-justify-content: center; margin-bottom: 10px;">
+<form autocomplete="off" action="/search/display" style="display: flex; align-items: center;
+justify-content: center; margin-bottom: 10px;" method="GET">
     <div style="width: 60%;"></div>
     <div class="autocomplete mx-1" style="width:200px;">
-        <input id="myInput" type="text" placeholder="abc">
+        <input id="myInput" type="text" name="title" placeholder="Search">
         <div class="items" id="items">
 
 
 
         </div>
     </div>
-    <input type="submit">
+    <button type="submit" class="btn" style="background: rgb(146 ,170 ,215); color: white;">Go</button>
 </form>
-<div class="list-group mx-5">
-    <% for(var i=0;i<json_list.length;i++) {
+<% if(search){ %>
+    <div class="flexSearch mb-2" style="display: flex; justify-content: center; flex-flow: wrap;">
+        <div style="font-size: 20px; font-weight: 600; color: grey;"> Showing Result For:</div>
+        <div style="width: 5px;"></div>
+        <div class="youSearched" style="color: rgb(255, 255, 255); display: flex; align-items: center;
+        background-color: #eed187;font-family: monospace; padding: 2px;">
+            <%=query  %>
+        </div>
+    </div>
+
+    <% } %>
+        <div class="list-group mx-5">
+            <% for(var i=0;i<json_list.length;i++) {
         var articlePath=`/preview/${json_list[i]._id}`
         %>
-        <a href="<%=articlePath %>" class="list-group-item list-group-item-action flex-column align-items-start mb-3
+                <a href="<%=articlePath %>" class="list-group-item list-group-item-action flex-column align-items-start mb-3
         bgSet">
-            <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1 h1">
-                    <%=json_list[i].title  %>
-                </h5>
-                <small class="dateTime"> <%=json_list[i].dateTime %></small>
-            </div>
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1 h1">
+                            <%=json_list[i].title  %>
+                        </h5>
+                        <small class="dateTime"> <%=json_list[i].dateTime %></small>
+                    </div>
 
-            <small class="bgname"><%=json_list[i].userName %> </small>
-        </a>
+                    <small class="bgname"><%=json_list[i].userName %> </small>
+                </a>
 
-        <% } %>
+                <% } %>
 
-</div>
-<div class="pageNumbering">
-    <%for(var i=1;i<=size;i++) {
+        </div>
+        <div class="pageNumbering">
+            <%for(var i=1;i<=size;i++) {
+                if(!search)
         var path=`/page/${i}`
+        else
+        var path=`/search/display?title=${query}&page=${i}`
         if(current==i){
         %>
-        <div class="pageCount" style="background: rgb(195, 235, 162);">
-            <%=i%>
+                <div class="pageCount" data-uid="<%=path%>" style="background: rgb(195, 235, 162);">
+                    <%=i%>
+                </div>
+                <% } else{ %>
+
+                    <a href="<%=path %>" class="pageCount">
+                        <%= i  %>
+                    </a>
+                    <%} } %>
+
         </div>
-        <% } else{ %>
 
-            <a href="<%=path %>" class="pageCount">
-                <%= i  %>
-            </a>
-            <%} } %>
+        <body>
 
-</div>
-
-<body>
-
-    <script type="text/javascript" src="/homePage.js"></script>
-</body>
+            <script type="text/javascript" src="/homePage.js"></script>
+        </body>
 
 </html>

@@ -4,22 +4,21 @@ var emailCheck = require('email-check');
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 const model = require("../models/dbSchema")
-
 router.post("/signUp", async(req, res) => {
     try {
         const userName = req.body.userName
         const password = req.body.password
-        emailCheck(req.body.userName)
-            .then(function(value) {
-                if (!value) {
-                    res.status(400).send({ "message": "email with given user name Do Not exist" })
-                }
+        let isValid = true
+        try {
+            isValid = await emailCheck(req.body.userName)
+        } catch (e) {
+            isValid = false
+        }
 
-            })
-            .catch(function(err) {
-                res.status(400).send({ "message": "email with given user name Do Not exist" })
-            });
-        const findModel = await model.findOne({ userName: userName })
+        if (isValid == false) {
+            throw "Email Not Exists"
+        }
+        const findModel = await model.findOne({ userName: userName }).lean()
         if (findModel == null) {
             await bcrypt.hash(password, 10, async(e, hash) => {
                 try {
@@ -30,7 +29,7 @@ router.post("/signUp", async(req, res) => {
                         userDataId = res_hash
                         const jsonObject = { userName: userName, password: hash, userDataId: userDataId }
                         const collection = await model(jsonObject).save()
-                        var token = jwt.sign(userDataId, process.env.bcryptHash);
+                        var token = jwt.sign({ "token": userDataId }, process.env.bcryptHash);
                         res.status(200).cookie("token", token, {
                             httpOnly: true,
                             secure: true,

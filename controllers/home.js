@@ -7,8 +7,8 @@ router.get("/", validator, async(req, res) => {
     var size = len / 10;
     if (len % 10 != 0)
         size++;
-    const json_list = await model.find({}).limit(10)
-    res.status(200).render("./homePage.ejs", { json_list: json_list, signedState: req.isLoggedIn, name: req.userName, size: size, current: 1 })
+    var json_list = await model.find({}).sort({ "unixTime": "desc" }).limit(10).select({ userId: 0 }).lean()
+    res.status(200).render("./homePage.ejs", { json_list: json_list, signedState: req.isLoggedIn, name: req.userName, size: size, current: 1, search: false })
 })
 router.get("/page/:page", validator, async(req, res) => {
     const page = req.params.page
@@ -22,15 +22,13 @@ router.get("/page/:page", validator, async(req, res) => {
         if (len % 10 != 0)
             size++;
         if ((page - 1) * 10 < len) {
-            const json_list = await model.find({}).skip((page - 1) * 10).limit(10)
-            res.status(200).render("./homePage.ejs", { json_list: json_list, signedState: req.isLoggedIn, name: req.userName, size: size, current: page })
+            var json_list = await model.find({}).skip((page - 1) * 10).sort({ "unixTime": "desc" }).limit(10).select({ userId: 0 }).lean()
+            res.status(200).render("./homePage.ejs", { json_list: json_list, signedState: req.isLoggedIn, name: req.userName, size: size, current: page, search: false })
         } else {
             res.status(200).redirect("/")
         }
     }
 })
-router.get("/query/:title", async(req, res) => {
-    res.send(req.params.title)
-})
+
 
 module.exports = router

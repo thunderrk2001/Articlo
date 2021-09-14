@@ -122,30 +122,46 @@
 
 
     <div class="title" id="title">How to make fragments with interfaces and classses and may more things</div>
-    <div class="main">
+    <div class="main" data-uid="<%=preview%>">
+        <% if(preview!="main_preview") {%>
+            <div id="id2" data-id="<%=id  %>">
+                <% } %>
+            </div>
+            <div class="space"></div>
+            <div class="content">
 
-        <div class="space"></div>
-        <div class="content">
 
-
-        </div>
-        <div class="space"></div>
+            </div>
+            <div class="space"></div>
 
     </div>
     <script>
-        var data = localStorage.getItem("article_data")
-        var title = localStorage.getItem("title")
-        document.getElementById("title").innerText = title
-        var ele = document.createElement("div")
-        ele.style.display = "flex"
-        ele.style.width = "900px"
-        ele.style.flexFlow = "wrap"
-        ele.innerHTML = data
-        ele.className = "ele"
-        ele.style.wordWrap = "word-break"
-        ele.style.display = "block"
-        ele.style.overflowWrap = "word-break"
-        document.querySelector(".content").appendChild(ele)
+        window.addEventListener("load", () => {
+            var data = ""
+            var title = ""
+            if (document.querySelector(".main").getAttribute("data-uid") != "main_preview") {
+                var id = document.getElementById("id2").getAttribute("data-id")
+                data = localStorage.getItem(`article_data_reject_edit${id}`)
+                title = localStorage.getItem(`title_reject_edit${id}`)
+
+            } else {
+                data = localStorage.getItem("article_data")
+                title = localStorage.getItem("title")
+
+            }
+
+            document.getElementById("title").innerText = title
+            var ele = document.createElement("div")
+
+            ele.style.width = "900px"
+
+            ele.innerHTML = data
+            ele.className = "ele"
+            ele.style.wordWrap = "word-break"
+            ele.style.display = "block"
+            ele.style.overflowWrap = "word-break"
+            document.querySelector(".content").appendChild(ele)
+        })
     </script>
 </body>
 

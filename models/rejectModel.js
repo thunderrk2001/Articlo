@@ -26,12 +26,23 @@ var sch = new mongo.Schema({
         type: String,
         required: true
     },
+    message: {
+        type: String,
+        required: true
+    },
     unixTime: {
         type: Date,
         required: true
+    },
+    isForUpdate: {
+        type: Boolean,
+        required: true
+    },
+    uid: {
+        type: String
     }
 
 })
 sch.index({ title: "text" })
-const model = mongo.model("userArticles", sch)
+const model = mongo.model("rejectArticle", sch)
 module.exports = model

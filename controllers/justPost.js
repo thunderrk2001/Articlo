@@ -2,11 +2,9 @@ const express = require("express")
 const router = express.Router()
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
-const model = require("../models/userArticles")
+const model = require("../models/pending")
 const validator = require("../middlewares/validator")
-
 router.post("/post_data", validator, async(req, res) => {
-
     await addData(req.userDataId, req.body.data, req.body.title, req.userName)
     res.send({
         "message": "sucess"
@@ -20,7 +18,9 @@ async function addData(id, data, title, name) {
         "article": data,
         "userId": id,
         "dateTime": date,
-        "userName": name
+        "userName": name,
+        "unixTime": d,
+        "isForUpdate": false
     }).save()
 }
 
@@ -32,7 +32,7 @@ function formatDate(date) {
     hours = hours ? hours : 12; // the hour '0' should be '12'
     minutes = minutes < 10 ? '0' + minutes : minutes;
     var strTime = hours + ':' + minutes + ' ' + ampm;
-    return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear() + "  " + strTime;
+    return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear() + "  ";
 }
 
 
