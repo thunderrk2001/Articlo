@@ -16,8 +16,15 @@ router.get("/myArticles/pending", validator, async(req, res) => {
     res.status(200).send({ "message": "success", "articles": json_list })
 })
 router.get("/myArticles/pending/:id", validator, async(req, res) => {
-    const json_obj = await pendingModel.findOne({ _id: req.params.id }).select({ "article": 1, "title": 1, "userName": 1, "dateTime": 1, _id: 0 }).lean()
-    res.status(200).render("./previewArticle.ejs", { json_res: json_obj })
+    try {
+
+        const json_obj = await pendingModel.findOne({ _id: req.params.id }).select({ "article": 1, "title": 1, "userName": 1, "dateTime": 1, _id: 0 }).lean()
+        if (json_obj == null)
+            throw "Null Error"
+        res.status(200).render("./previewArticle.ejs", { json_res: json_obj })
+    } catch (e) {
+        res.status(404).render("./errorView.ejs", { error: "Article don't exists" })
+    }
 })
 router.get("/myArticles/reject", validator, async(req, res) => {
     const json_list = await rejectModel.find({ userId: req.userDataId, isForUpdate: false }).sort({ "unixTime": "desc" }).lean()
@@ -30,42 +37,62 @@ router.get("/myArticles/reject_update", validator, async(req, res) => {
 })
 
 router.get("/myArticles/editReject/:id", validator, async(req, res) => {
-    const json_data = await rejectModel.findOne({ userId: req.userDataId, _id: req.params.id }).select({
-        "title": 1,
-        "article": 1,
-        "dateTime": 1,
-        "message": 1,
-        _id: 0
-    }).lean()
-
-    res.status(200).render("./editReject.ejs", { name: req.userName, id: req.params.id, data: json_data })
+    try {
+        const json_data = await rejectModel.findOne({ userId: req.userDataId, _id: req.params.id }).select({
+            "title": 1,
+            "article": 1,
+            "dateTime": 1,
+            "message": 1,
+            _id: 0
+        }).lean()
+        if (json_data == null)
+            throw "Null Error"
+        res.status(200).render("./editReject.ejs", { name: req.userName, id: req.params.id, data: json_data })
+    } catch (e) {
+        res.status(404).render("./errorView.ejs", { error: "Article don't exists" })
+    }
 })
 
 router.get("/myArticles/editRejectUpdate/:id", validator, async(req, res) => {
-    const json_data = await rejectModel.findOne({ userId: req.userDataId, _id: req.params.id, isForUpdate: true }).select({
-        "title": 1,
-        "article": 1,
-        "dateTime": 1,
-        "message": 1,
-        "uid": 1,
-        _id: 0
-    }).lean()
-    res.status(200).render("./update.ejs", { name: req.userName, id: json_data.uid, data: json_data })
+    try {
+        const json_data = await rejectModel.findOne({ userId: req.userDataId, _id: req.params.id, isForUpdate: true }).select({
+            "title": 1,
+            "article": 1,
+            "dateTime": 1,
+            "message": 1,
+            "uid": 1,
+            _id: 0
+        }).lean()
+        if (json_data == null)
+            throw "NULL ERROR"
+        res.status(200).render("./update.ejs", { name: req.userName, id: json_data.uid, data: json_data })
+    } catch (e) {
+        res.status(404).render("./errorView.ejs", { error: "Article don't exists" })
+    }
 })
 
 router.get("/myArticles/update/:id", validator, async(req, res) => {
-    const json_data = await model.findOne({ userId: req.userDataId, _id: req.params.id }).select({
-        "title": 1,
-        "article": 1,
-        "dateTime": 1,
-        "message": 1,
-        _id: 0
-    }).lean()
-    res.status(200).render("./update.ejs", { name: req.userName, id: req.params.id, data: json_data, })
+    try {
+        const json_data = await model.findOne({ userId: req.userDataId, _id: req.params.id }).select({
+            "title": 1,
+            "article": 1,
+            "dateTime": 1,
+            "message": 1,
+            _id: 0
+        }).lean()
+        if (json_data == null)
+            throw "NULL ERROR"
+        res.status(200).render("./update.ejs", { name: req.userName, id: req.params.id, data: json_data, })
+
+    } catch (e) {
+        res.status(404).render("./errorView.ejs", { error: "Article don't exists" })
+    }
 
 })
 router.get("/myArticles/editReject/:id/preview", validator, async(req, res) => {
+
     res.status(200).render("./previewArticleAfterWrite.ejs", { preview: "edit_reject", id: req.params.id })
+
 })
 router.post("/myArticles/editReject/:id/submit", validator, async(req, res) => {
     await addData(req.userDataId, req.body.data, req.body.title, req.userName)

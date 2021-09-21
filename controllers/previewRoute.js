@@ -8,7 +8,15 @@ router.get("/writeArticle/previewRoute", validation, (req, res) => {
     res.status(200).render("./previewArticleAfterWrite.ejs", { preview: "main_preview" })
 })
 router.get("/preview/:id", async(req, res) => {
-    const json_obj = await model.findOne({ _id: req.params.id }).select({ article: 1, title: 1, userName: 1, dateTime: 1, _id: 0 }).lean()
-    res.status(200).render("./previewArticle.ejs", { json_res: json_obj })
+    try {
+        const json_obj = await model.findOne({ _id: req.params.id }).select({ article: 1, title: 1, userName: 1, dateTime: 1, _id: 0 }).lean()
+        if (json_obj == null)
+            throw "Null Error"
+        res.status(200).render("./previewArticle.ejs", { json_res: json_obj })
+    } catch (e) {
+
+        res.status(404).render("./errorView.ejs", { error: "Article don't exists" })
+    }
+
 })
 module.exports = router
