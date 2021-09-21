@@ -21,6 +21,11 @@ const home_route = require("./controllers/home")
 const searchRoute = require("./controllers/search")
 const path = require("path");
 app.set('view engine', 'ejs');
+const mongo = require("mongoose")
+mongo.connect(process.env.dbId, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+}).then(res => console.log("mongodb connected")).catch(e => console.log("mongo errror" + " : " + e))
 app.use(express.static(path.join(__dirname, "views")));
 app.use(express.static(path.join(__dirname, "public/javascript/")));
 app.use(express.static(path.join(__dirname, "public/")));
@@ -50,14 +55,18 @@ app.use(myArticleRoute)
 app.use(previewRoute)
 app.use(upload_image_route)
 app.use(searchRoute)
+
 const checker = require("./middlewares/signInUpChecker")
 app.get("/signIn", checker, (req, res) => {
     res.render("./signIn.ejs", )
 })
 app.get("/signUp", checker, (req, res) => {
-    res.render("./signUp.ejs", )
-})
-
+        res.render("./signUp.ejs", )
+    })
+    //If route is not present in above roots
+app.use((req, res, next) => {
+    res.status(404).render("./errorView.ejs", { error: "It is Pointing to singularity.." })
+});
 app.listen(port, (err) => {
     console.log("listening")
 
