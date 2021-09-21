@@ -1,8 +1,4 @@
 const mongo = require("mongoose")
-mongo.connect(process.env.dbId, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-}).then(res => console.log("mongodb connected")).catch(e => console.log("mongo errror" + " : " + e))
 const model = mongo.model("Student", {
     userName: {
         type: String,
