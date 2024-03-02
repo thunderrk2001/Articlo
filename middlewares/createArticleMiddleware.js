@@ -5,7 +5,9 @@ const bcrypt = require("bcrypt")
 const model = require("../models/dbSchema")
 const blackListModel = require("../models/blacklistTokens")
 var validator = (async(req, res, next) => {
-    var t = req.cookies.token
+    var t = req.cookies.token;
+        console.log("my cookies===");
+    console.log(req.cookies);
     if (t != undefined) {
         let blackListedToken = await blackListModel.findOne({ token: t }).lean()
         if (blackListedToken == null) {
