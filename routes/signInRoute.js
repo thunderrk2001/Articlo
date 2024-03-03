@@ -20,7 +20,7 @@ router.post("/signIn", async(req, res) => {
                 res.status(200).cookie("token", token, {
                     httpOnly: true,
                     secure: true,
-                    sameSite: "none"
+                    sameSite: "strict"
                 })
 
                 res.status(200).send({ "message": "sucessfull signed In" })
